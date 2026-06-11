@@ -1,8 +1,10 @@
 # Lab 11 - Guardrails, HITL & Responsible AI
 
-Project này triển khai bài Lab 11 về guardrails, human-in-the-loop (HITL), red teaming và kiểm thử an toàn cho AI banking assistant. Code mặc định dùng Alibaba Cloud Model Studio / DashScope, có fallback local để vẫn chạy được khi chưa có API key.
+Project nay trien khai Lab 11 ve guardrails, human-in-the-loop (HITL), red teaming va kiem thu an toan cho AI banking assistant.
 
-## Cấu trúc thư mục
+Runtime chinh chi dung Alibaba Cloud Model Studio / DashScope. Khong con dung provider cu trong code chinh. Neu chua co `DASHSCOPE_API_KEY`, code se dung local fallback responses de van chay duoc test.
+
+## Cau truc thu muc
 
 ```text
 .
@@ -25,11 +27,11 @@ Project này triển khai bài Lab 11 về guardrails, human-in-the-loop (HITL),
 └── README.md
 ```
 
-## File môi trường
+## Cau hinh API key
 
-File `.env` dùng để lưu API key thật và đã được đưa vào `.gitignore`, không commit file này lên Git.
+File `.env` luu API key that va da nam trong `.gitignore`, khong commit file nay len Git.
 
-Điền key vào `.env`:
+Dien key vao `.env`:
 
 ```env
 DASHSCOPE_API_KEY=your_real_dashscope_api_key
@@ -37,11 +39,11 @@ DASHSCOPE_BASE_URL=https://dashscope-intl.aliyuncs.com/compatible-mode/v1
 ALIBABA_MODEL=qwen-plus
 ```
 
-File `.env.example` là file mẫu an toàn để commit.
+File `.env.example` la file mau an toan de commit.
 
-## Tạo môi trường Python
+## Tao moi truong Python
 
-Khuyến nghị dùng Python 3.11 vì một số dependency của NeMo Guardrails cần package native.
+Core runtime khong can package ngoai vi goi DashScope bang Python standard library (`urllib`). `requirements.txt` duoc giu de workflow cai dat thong nhat.
 
 ```powershell
 py -3.11 -m venv .venv
@@ -50,23 +52,23 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-NeMo Guardrails là phần optional:
+NeMo Guardrails la phan optional:
 
 ```powershell
 python -m pip install -r requirements-nemo.txt
 ```
 
-Nếu cài `nemoguardrails` lỗi ở package `annoy` với thông báo cần Microsoft C++ Build Tools, cài Visual C++ Build Tools rồi chạy lại lệnh install. Các phần chính của project vẫn chạy được nếu chưa cài NeMo; phần NeMo sẽ tự skip.
+Neu cai `nemoguardrails` loi o package `annoy` voi thong bao can Microsoft C++ Build Tools, cai Visual C++ Build Tools roi chay lai lenh install. Cac phan chinh cua project van chay duoc neu chua cai NeMo; phan NeMo se tu skip.
 
-## Chạy project
+## Chay project
 
-Chạy toàn bộ lab:
+Chay toan bo lab:
 
 ```powershell
 python src\main.py
 ```
 
-Chạy từng phần:
+Chay tung phan:
 
 ```powershell
 python src\main.py --part 1
@@ -75,13 +77,13 @@ python src\main.py --part 3
 python src\main.py --part 4
 ```
 
-Có thể chạy kiểu module từ thư mục gốc:
+Co the chay kieu module tu thu muc goc:
 
 ```powershell
 python -m src.main --part 4
 ```
 
-## Chạy test nhanh
+## Chay test nhanh
 
 ```powershell
 python -m compileall src
@@ -91,18 +93,20 @@ python src\hitl\hitl.py
 python src\testing\testing.py
 ```
 
-## Nội dung chính
+## Noi dung chinh
 
-- `src/attacks/attacks.py`: 5 adversarial prompts và AI red teaming.
-- `src/guardrails/input_guardrails.py`: phát hiện prompt injection, lọc topic, input guardrail plugin.
-- `src/guardrails/output_guardrails.py`: redact PII/secret, LLM-as-Judge, output guardrail plugin.
-- `src/guardrails/nemo_guardrails.py`: cấu hình NeMo Guardrails / Colang.
-- `src/testing/testing.py`: before/after comparison và security test pipeline.
-- `src/hitl/hitl.py`: confidence router và 3 HITL decision points.
+- `src/core/alibaba_client.py`: DashScope OpenAI-compatible Chat Completions client bang `urllib`.
+- `src/agents/agent.py`: unsafe/protected Alibaba-compatible agent va local fallback runner.
+- `src/attacks/attacks.py`: adversarial prompts va AI red teaming bang Alibaba/Qwen.
+- `src/guardrails/input_guardrails.py`: prompt injection detection, topic filter, input plugin.
+- `src/guardrails/output_guardrails.py`: redact PII/secret, Alibaba/Qwen judge, output plugin.
+- `src/guardrails/nemo_guardrails.py`: optional NeMo Guardrails / Colang config.
+- `src/testing/testing.py`: before/after comparison va security test pipeline.
+- `src/hitl/hitl.py`: confidence router va 3 HITL decision points.
 
-## Ghi chú bảo mật
+## Ghi chu bao mat
 
-- Không commit `.env`.
-- Chỉ commit `.env.example`.
-- Nếu cần đổi region DashScope, sửa `DASHSCOPE_BASE_URL` trong `.env`.
-- Nếu chưa có `DASHSCOPE_API_KEY`, code sẽ in thông báo và dùng local fallback responses.
+- Khong commit `.env`.
+- Chi commit `.env.example`.
+- Neu can doi region DashScope, sua `DASHSCOPE_BASE_URL` trong `.env`.
+- Neu chua co `DASHSCOPE_API_KEY`, code se in thong bao va dung local fallback responses.
