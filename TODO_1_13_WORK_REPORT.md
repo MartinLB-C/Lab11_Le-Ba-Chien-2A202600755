@@ -4,19 +4,17 @@ Ngay thuc hien: 2026-06-11
 
 ## 1. Tong quan
 
-Da hoan thanh 13 TODO cua Lab 11 va dieu chinh code de mac dinh dung Alibaba Cloud Model Studio / DashScope thay cho Gemini. Code van giu duoc cau truc lab cu, nhung co them local fallback de chay test khi chua dat API key.
+Da hoan thanh 13 TODO cua Lab 11 va dieu chinh code de chi dung Alibaba Cloud Model Studio / DashScope. Code co local fallback de chay test khi chua dat API key.
 
 ## 2. Ho tro Alibaba API
 
 - Them `src/core/alibaba_client.py` de goi DashScope theo OpenAI-compatible Chat Completions API bang `urllib`.
 - Cap nhat `src/core/config.py`:
-  - Mac dinh `AI_PROVIDER=alibaba`.
   - Doc `DASHSCOPE_API_KEY` hoac `ALIBABA_API_KEY`.
   - Mac dinh `DASHSCOPE_BASE_URL=https://dashscope-intl.aliyuncs.com/compatible-mode/v1`.
   - Mac dinh `ALIBABA_MODEL=qwen-plus`.
 - Cap nhat `src/agents/agent.py`:
   - Them `SimpleAlibabaAgent` va `SimpleAlibabaRunner`.
-  - Giu fallback Google ADK neu dat `AI_PROVIDER=google` va da cai dependency.
   - Co local fallback response de test guardrails khi khong co API key.
 - Nguon tham khao Alibaba: https://www.alibabacloud.com/help/en/model-studio/compatibility-of-openai-with-dashscope
 
@@ -40,7 +38,7 @@ Da hoan thanh 13 TODO cua Lab 11 va dieu chinh code de mac dinh dung Alibaba Clo
 
 ## 4. Cac file moi
 
-- `src/core/compat.py`: fallback types/plugin de code chay khi chua cai `google-genai` hoac `google-adk`.
+- `src/core/compat.py`: lightweight content/plugin types cho local Alibaba runner.
 - `src/core/alibaba_client.py`: Alibaba/DashScope OpenAI-compatible HTTP client.
 - `TODO_1_13_WORK_REPORT.md`: bao cao cong viec nay.
 
@@ -50,14 +48,14 @@ Da chay thanh cong:
 
 ```powershell
 python -m compileall src
-python guardrails\input_guardrails.py
-python guardrails\output_guardrails.py
-python hitl\hitl.py
-python main.py --part 1
-python main.py --part 2
-python main.py --part 3
-python main.py --part 4
-python testing\testing.py
+python src\guardrails\input_guardrails.py
+python src\guardrails\output_guardrails.py
+python src\hitl\hitl.py
+python src\main.py --part 1
+python src\main.py --part 2
+python src\main.py --part 3
+python src\main.py --part 4
+python src\testing\testing.py
 ```
 
 Ket qua dang chu y:
@@ -75,8 +73,7 @@ PowerShell:
 $env:DASHSCOPE_API_KEY="your_api_key"
 $env:ALIBABA_MODEL="qwen-plus"
 $env:DASHSCOPE_BASE_URL="https://dashscope-intl.aliyuncs.com/compatible-mode/v1"
-cd src
-python main.py
+python src\main.py
 ```
 
 Neu API key thuoc region khac, doi `DASHSCOPE_BASE_URL` theo region Alibaba:

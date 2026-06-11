@@ -13,20 +13,9 @@ from pathlib import Path
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-try:
-    from google.genai import types
-except ImportError:
-    from core.compat import types
+from core.compat import base_plugin, types
 
-try:
-    from google.adk.plugins import base_plugin
-except ImportError:
-    from core.compat import base_plugin
-
-try:
-    from google.adk.agents.invocation_context import InvocationContext
-except ImportError:
-    InvocationContext = object
+InvocationContext = object
 
 from core.config import ALLOWED_TOPICS, BLOCKED_TOPICS
 from core.utils import extract_text_from_content

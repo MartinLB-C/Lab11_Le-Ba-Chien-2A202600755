@@ -24,14 +24,14 @@ You are **free to use any framework**. The goal is the pipeline design and the s
 
 | Framework | Guardrail Approach |
 |-----------|-------------------|
-| **Google ADK** | `BasePlugin` with callbacks (same as lab) |
+| **Alibaba/DashScope local runner** | Callback plugins around the Qwen-backed assistant |
 | **LangChain / LangGraph** | Custom chains, node-based graph with conditional edges |
 | **NVIDIA NeMo Guardrails** | Colang + `LLMRails` (standalone, no wrapping needed) |
 | **Guardrails AI** (`guardrails-ai`) | Validators + `Guard` object, pre-built PII/toxicity checks |
 | **CrewAI / LlamaIndex** | Agent-level or query-pipeline guardrails |
 | **Pure Python** | No framework — just functions and classes |
 
-You can also **combine frameworks** (e.g., NeMo for rules + Guardrails AI for PII). The code skeletons in the Appendix use Google ADK as a reference — adapt them, or build from scratch.
+You can also **combine frameworks** (e.g., NeMo for rules + Guardrails AI for PII). The local Python implementation in this repo uses Alibaba/DashScope with callback plugins.
 
 ---
 
@@ -52,7 +52,7 @@ User Input
 └─────────┬───────────┘
           ▼
 ┌─────────────────────┐
-│  LLM (Gemini)        │ ← Generate response
+│  LLM (Alibaba/Qwen)  │ ← Generate response
 └─────────┬───────────┘
           ▼
 ┌─────────────────────┐
@@ -184,7 +184,7 @@ Add a **6th safety layer** of your own design. Some ideas:
 
 ---
 
-## Appendix: Reference Skeletons (Google ADK)
+## Appendix: Reference Skeletons (Callback Plugins)
 
 These are **reference only**. Use them as inspiration or ignore them entirely.
 
@@ -194,8 +194,7 @@ These are **reference only**. Use them as inspiration or ignore them entirely.
 ```python
 from collections import defaultdict, deque
 import time
-from google.adk.plugins import base_plugin
-from google.genai import types
+from core.compat import base_plugin, types
 
 class RateLimitPlugin(base_plugin.BasePlugin):
     def __init__(self, max_requests=10, window_seconds=60):
@@ -238,7 +237,7 @@ TONE: <score>
 VERDICT: PASS or FAIL
 REASON: <one sentence>
 """
-# WARNING: Do NOT use {variable} in instruction strings — ADK treats them as template variables.
+# WARNING: Do NOT use {variable} in instruction strings if your runner treats them as template variables.
 # Pass content to judge as the user message instead.
 ```
 </details>
@@ -249,7 +248,7 @@ REASON: <one sentence>
 ```python
 import json
 from datetime import datetime
-from google.adk.plugins import base_plugin
+from core.compat import base_plugin
 
 class AuditLogPlugin(base_plugin.BasePlugin):
     def __init__(self):
@@ -344,7 +343,7 @@ class DefensePipeline:
 
 ## References
 
-- [Google ADK Plugin Documentation](https://google.github.io/adk-docs/)
+- [Alibaba DashScope OpenAI-compatible API](https://www.alibabacloud.com/help/en/model-studio/compatibility-of-openai-with-dashscope)
 - [NeMo Guardrails GitHub](https://github.com/NVIDIA/NeMo-Guardrails)
 - [Guardrails AI](https://www.guardrailsai.com/) — validator-based guardrails with pre-built checks
 - [LangGraph Documentation](https://langchain-ai.github.io/langgraph/) — stateful, graph-based agent pipelines

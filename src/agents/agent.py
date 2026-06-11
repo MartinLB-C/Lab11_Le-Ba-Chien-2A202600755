@@ -4,17 +4,8 @@ Lab 11 - Agent creation for unsafe and protected assistants.
 from dataclasses import dataclass
 from types import SimpleNamespace
 
-try:
-    from google.adk.agents import llm_agent
-    from google.adk import runners
-    ADK_AVAILABLE = True
-except ImportError:
-    llm_agent = None
-    runners = None
-    ADK_AVAILABLE = False
-
 from core.alibaba_client import AlibabaAPIError, chat_completion, has_alibaba_key
-from core.config import get_ai_provider, get_alibaba_model
+from core.config import get_alibaba_model
 from core.utils import chat_with_agent, extract_text_from_content, make_content
 
 
@@ -80,7 +71,7 @@ class SimpleAlibabaAgent:
 
 
 class SimpleAlibabaRunner:
-    """Small runner that applies ADK-style plugins around an Alibaba agent."""
+    """Small runner that applies callback plugins around an Alibaba agent."""
 
     def __init__(self, agent: SimpleAlibabaAgent, app_name: str, plugins: list | None = None):
         self.agent = agent
@@ -121,20 +112,6 @@ class SimpleAlibabaRunner:
         return extract_text_from_content(llm_response.content)
 
 
-def _create_adk_agent(name: str, instruction: str, app_name: str, plugins: list | None = None):
-    """Create a Google ADK agent when explicitly selected and available."""
-    agent = llm_agent.LlmAgent(
-        model="gemini-2.5-flash-lite",
-        name=name,
-        instruction=instruction,
-    )
-    if plugins:
-        runner = runners.InMemoryRunner(agent=agent, app_name=app_name, plugins=plugins)
-    else:
-        runner = runners.InMemoryRunner(agent=agent, app_name=app_name)
-    return agent, runner
-
-
 def _create_alibaba_agent(name: str, instruction: str, app_name: str, unsafe: bool, plugins=None):
     """Create a local Alibaba-backed agent and plugin runner."""
     agent = SimpleAlibabaAgent(
@@ -149,13 +126,6 @@ def _create_alibaba_agent(name: str, instruction: str, app_name: str, unsafe: bo
 
 def create_unsafe_agent():
     """Create a banking agent with no guardrails for attack demonstration."""
-    if get_ai_provider() == "google" and ADK_AVAILABLE:
-        agent, runner = _create_adk_agent(
-            "unsafe_assistant", UNSAFE_INSTRUCTION, "unsafe_test"
-        )
-        print("Unsafe Google ADK agent created - NO guardrails!")
-        return agent, runner
-
     agent, runner = _create_alibaba_agent(
         "unsafe_assistant", UNSAFE_INSTRUCTION, "unsafe_test", unsafe=True
     )
@@ -167,13 +137,6 @@ def create_unsafe_agent():
 
 def create_protected_agent(plugins: list):
     """Create a banking agent with guardrail plugins enabled."""
-    if get_ai_provider() == "google" and ADK_AVAILABLE:
-        agent, runner = _create_adk_agent(
-            "protected_assistant", PROTECTED_INSTRUCTION, "protected_test", plugins
-        )
-        print("Protected Google ADK agent created WITH guardrails!")
-        return agent, runner
-
     agent, runner = _create_alibaba_agent(
         "protected_assistant",
         PROTECTED_INSTRUCTION,

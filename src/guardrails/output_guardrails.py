@@ -12,15 +12,7 @@ from pathlib import Path
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-try:
-    from google.genai import types
-except ImportError:
-    from core.compat import types
-
-try:
-    from google.adk.plugins import base_plugin
-except ImportError:
-    from core.compat import base_plugin
+from core.compat import base_plugin, types
 
 from core.alibaba_client import AlibabaAPIError, chat_completion, has_alibaba_key
 from core.config import get_alibaba_model

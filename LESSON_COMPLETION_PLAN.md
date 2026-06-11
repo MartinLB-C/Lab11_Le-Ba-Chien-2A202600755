@@ -7,7 +7,7 @@ Cap nhat 2026-06-11: TODO 1-13 cua lab da duoc implement. Xem bao cao tai `TODO_
 ## 1. Trang thai code hien tai
 
 - [ ] `src/attacks/attacks.py`: TODO 1 van con prompt mau dang de placeholder. Can thay bang 5 adversarial prompts that su.
-- [ ] `src/attacks/attacks.py`: TODO 2 da co khung goi Gemini de sinh prompt tan cong, nhung can chay va luu output vao notebook/report.
+- [ ] `src/attacks/attacks.py`: TODO 2 da co khung goi Alibaba/Qwen de sinh prompt tan cong, nhung can chay va luu output vao notebook/report.
 - [ ] `src/guardrails/input_guardrails.py`: TODO 3 chua co regex injection patterns.
 - [ ] `src/guardrails/input_guardrails.py`: TODO 4 `topic_filter()` dang `pass`.
 - [ ] `src/guardrails/input_guardrails.py`: TODO 5 `InputGuardrailPlugin.on_user_message_callback()` dang `pass`.
@@ -90,7 +90,7 @@ Cap nhat 2026-06-11: TODO 1-13 cua lab da duoc implement. Xem bao cao tai `TODO_
 
 ### Phase 2 - Xay production defense pipeline cho assignment
 
-- [ ] Chon framework thuc hien. Khuyen nghi: bat dau bang Google ADK plugins vi repo da dung ADK.
+- [ ] Chon framework thuc hien. Khuyen nghi: dung callback plugins trong local Alibaba runner cua repo.
 - [ ] Them `RateLimitPlugin`:
   - [ ] Sliding window per user.
   - [ ] Max 10 requests / 60 seconds theo Test 3.

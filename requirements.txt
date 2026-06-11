@@ -1,0 +1,2 @@
+# Core runtime uses only the Python standard library.
+# Optional NeMo Guardrails dependency is in requirements-nemo.txt.

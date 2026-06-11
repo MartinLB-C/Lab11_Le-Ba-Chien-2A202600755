@@ -1,10 +1,7 @@
 """
 Lab 11 - Helper utilities.
 """
-try:
-    from google.genai import types
-except ImportError:
-    from core.compat import types
+from core.compat import types
 
 
 def extract_text_from_content(content) -> str:
@@ -18,18 +15,18 @@ def extract_text_from_content(content) -> str:
 
 
 def make_content(role: str, text: str):
-    """Create a Content object for either google-genai or local fallback types."""
+    """Create a lightweight Content object for the local Alibaba runner."""
     return types.Content(role=role, parts=[types.Part.from_text(text=text)])
 
 
 async def chat_with_agent(agent, runner, user_message: str, session_id=None):
-    """Send a message to either an ADK runner or the local Alibaba runner.
+    """Send a message to the local Alibaba runner.
 
     Args:
         agent: The agent instance.
-        runner: ADK InMemoryRunner or SimpleAlibabaRunner.
+        runner: SimpleAlibabaRunner.
         user_message: Plain text message to send.
-        session_id: Optional ADK session ID.
+        session_id: Kept for backward-compatible call sites.
 
     Returns:
         Tuple of (response_text, session).
