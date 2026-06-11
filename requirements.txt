@@ -1,2 +1,3 @@
-# Core runtime uses only the Python standard library.
-# Optional NeMo Guardrails dependency is in requirements-nemo.txt.
+# Core Alibaba/DashScope runtime uses only the Python standard library.
+# Install optional NeMo dependencies with:
+#   python -m pip install -r requirements-nemo.txt
